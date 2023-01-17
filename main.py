@@ -25,7 +25,7 @@ class Student:
 
     def __str__(self):
         return f'Имя: {self.name}\nИмя: {self.surname}\nСредняя оценка за домашние задания" ' \
-               f'{self.calculate_total_grades()/(len(self.courses_in_progress) + len(self.finished_courses))}\n' \
+               f'{self.calculate_total_grades() / (len(self.courses_in_progress) + len(self.finished_courses))}\n' \
                f'Курсы в процессе изучения: {self.courses_in_progress}\nЗавершенные курсы: {self.finished_courses}\n'
 
 
@@ -49,7 +49,7 @@ class Lecturer(Mentor):
 
     def __str__(self):
         return f'Имя: {self.name}\nИмя: {self.surname}\nСредняя оценка за лекции" ' \
-               f'{self.calculate_total_grades()/len(self.courses_attached)}\n '
+               f'{self.calculate_total_grades() / len(self.courses_attached)}\n '
 
 
 class Reviewer(Mentor):
@@ -94,6 +94,7 @@ student_1.rate_lecturer(lecturer_1, 'French', 8)
 student_2.rate_lecturer(lecturer_2, 'Python', 9)
 student_2.rate_lecturer(lecturer_2, 'English', 9)
 
+
 print('\nОценки студентов:')
 print(student_1.grades)
 print(student_2.grades)
@@ -115,11 +116,30 @@ print(student_1)
 print(student_2)
 
 def homeworks_result(students, course):
-    pass
+    sum_grades = 0
+    sum_grades_numbers = 0
+    for student in students:
+        if isinstance(student, Student) and course in student.courses_in_progress or course in student.finished_courses:
+            for grade in student.grades.values():
+                sum_grades += sum(grade)
+                sum_grades_numbers += 1
+    avg_grade = sum_grades / sum_grades_numbers
+    return avg_grade
 
-def lecturers_result(lectors, course):
-    pass
 
-homeworks_result([student_1, student_2], 'Python')
-lecturers_result([lecturer_1, lecturer_2], 'Python')
+def lecturers_result(lecturers, course):
+    sum_grades = 0
+    sum_grades_numbers = 0
+    for lecturer in lecturers:
+        if isinstance(lecturer, Lecturer) and course in lecturer.courses_attached:
+            for grade in lecturer.grades.values():
+                sum_grades += sum(grade)
+                sum_grades_numbers += 1
+    avg_grade = sum_grades / sum_grades_numbers
+    return avg_grade
 
+
+print('Cредняя оценка за домашние задания по студентам в рамках конкретного курса: ', homeworks_result([student_1,
+                                                                                                        student_2],
+                                                                                                       'Python'))
+print('Средняя оценка за лекции лекторов в рамках курса', lecturers_result([lecturer_1, lecturer_2], 'Python'))
